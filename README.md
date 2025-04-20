@@ -1,4 +1,11 @@
 ```
+npm install
+npm run dev
+```
+
+
+
+```
 LHC_BOOKING_SYSTEM
 
 node run-sql-code.js   to  run sql code
