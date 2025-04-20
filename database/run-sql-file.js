@@ -1,66 +1,51 @@
-const mysql = require('mysql2/promise');
-const fs = require('fs').promises;
+import mysql from 'mysql2/promise';
+import { promises as fs } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-// Database connection configuration
 const dbConfig = {
-  host: 'jke8l.h.filess.io',
-  port: 3307,
-  user: 'CS315_couldfire',
+  host:     'jke8l.h.filess.io',
+  port:     3307,
+  user:     'CS315_couldfire',
   password: '934cb898ce1347e385a99ad324ef50d1de609a59',
-  database: 'CS315_couldfire'
+  database: 'CS315_couldfire',
 };
 
 async function executeSqlFile(filePath) {
   let connection;
-  
   try {
-    // Read SQL file
     const sqlContent = await fs.readFile(filePath, 'utf8');
-    
-    // Split by semicolon to get individual queries
-    const queries = sqlContent.split(';').filter(query => query.trim());
-    
-    // Connect to database
+    const queries = sqlContent
+      .split(';')
+      .map(q => q.trim())
+      .filter(Boolean);
+
     connection = await mysql.createConnection(dbConfig);
-    console.log('Connected to database successfully!');
-    
-    // Execute each query
+    console.log('✅ Connected to database successfully!');
+
     for (const query of queries) {
-      if (query.trim()) {
-        console.log(`Executing query: ${query.trim().substring(0, 50)}...`);
-        await connection.query(query);
-      }
+      console.log(`▶️  Executing: ${query.substring(0,50)}...`);
+      await connection.query(query);
     }
-    
-    console.log('SQL file executed successfully!');
-    
-    // Query to verify
-    const [rows] = await connection.query('SELECT * FROM dummy_products');
-    console.log('Data in dummy_products table:');
+
+    console.log('🎉 SQL file executed successfully!');
+
+    const [rows] = await connection.query('SELECT * FROM LOGIN LIMIT 5');
     console.table(rows);
-    
-  } catch (error) {
-    console.error('Error executing SQL file:', error);
+
+  } catch (err) {
+    console.error('❌ Error executing SQL file:', err);
   } finally {
     if (connection) {
       await connection.end();
-      console.log('Database connection closed');
+      console.log('🔒 Database connection closed');
     }
   }
 }
 
-// Save the SQL file and execute it
-async function createAndRunSqlFile() {
-  const fileName = '../database/LHC.sql';
-  
-  try {
-    
-    // Execute the SQL file
-    await executeSqlFile(fileName);
-    
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+// Path conversion for Windows compatibility
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const sqlFilePath = path.join(__dirname, 'LHC.sql');
 
-createAndRunSqlFile();
+await executeSqlFile(sqlFilePath);
