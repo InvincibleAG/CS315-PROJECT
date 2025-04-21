@@ -1,6 +1,7 @@
 ```
-npm install
-npm run dev
+npm install in backend and root folder to install the npm packages
+npm run dev in root folder to host the frontend
+npm start in backend folder to start the server
 ```
 
 
@@ -18,6 +19,4 @@ ER Diagram
 ```
 https://lucid.app/lucidchart/9234c92e-d170-4aa0-a6c8-4df92f5ecea2/edit?viewport_loc=-1781%2C675%2C2027%2C1011%2C0_0&invitationId=inv_29c13d06-8760-4772-a103-a4c66091539a
 ```
-```
-DONT LEAVE IDLE CONNECTIONS OPEN!!!!!!!
-```
+
