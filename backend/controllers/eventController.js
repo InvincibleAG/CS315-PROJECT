@@ -134,9 +134,10 @@ exports.getAllEvents = (req, res) => {
   // Check if user is admin
   // This is a placeholder - you'd need to implement admin check
   // based on your user roles system
-  const isAdmin = checkIfAdmin(req.user);
+  const isAdmin = req.user.isAdmin; // This should be set based on your auth system
   
   if (!isAdmin) {
+    console.log('Access denied: User is not an admin');
     return res.status(403).json({ msg: 'Access denied: Admin only' });
   }
 
@@ -148,7 +149,7 @@ exports.getAllEvents = (req, res) => {
     JOIN USER_EVENT ue ON e.E_ID = ue.E_ID
     JOIN USERS u ON ue.U_ID = u.U_ID
     LEFT JOIN EVENT_TIME et ON e.E_ID = et.E_ID
-    GROUP BY e.E_ID
+    GROUP BY e.E_ID, u.U_NAME
     ORDER BY e.E_DATE_START DESC
   `;
 
@@ -183,6 +184,7 @@ exports.getEventById = (req, res) => {
     }
 
     if (accessResults.length === 0) {
+      console.log('Access denied: User does not have access to this event');
       return res.status(403).json({ msg: 'Access denied to this event' });
     }
 
@@ -242,9 +244,10 @@ exports.updateEventStatus = (req, res) => {
     }
     
     // Check if user is admin - placeholder function
-    const isAdmin = checkIfAdmin(req.user);
+    const isAdmin = req.user.isAdmin; // This should be set based on your auth system
     
     if (!isAdmin) {
+      console.log('Access denied: User is not an admin');
       return res.status(403).json({ msg: 'Access denied: Admin only' });
     }
     
@@ -268,9 +271,68 @@ exports.updateEventStatus = (req, res) => {
     });
   };
   
-  // Helper function to check if user is admin
-  function checkIfAdmin(user) {
-    // In a real implementation, you would check the user's role
-    // This is a placeholder - implement based on your auth system
-    return user.type === 'ADMIN' || user.type === 'STAFF';
+
+  // Add this to eventController.js
+exports.getEventsByStatus = (req, res) => {
+  const { status } = req.params;
+  // Check if user is admin
+  const isAdmin = req.user.isAdmin;
+  
+  if (!isAdmin) {
+    console.log('Access denied: User is not an admin');
+    return res.status(403).json({ msg: 'Access denied: Admin only' });
   }
+  
+  // Validate status
+  const validStatus = ['PENDING', 'CONFIRMED', 'CANCELLED'].includes(status.toUpperCase());
+  if (!validStatus) {
+    return res.status(400).json({ msg: 'Invalid status value' });
+  }
+
+  const sql = `
+    SELECT e.*, 
+           u.U_NAME as REQUESTER_NAME,
+           GROUP_CONCAT(DISTINCT et.ET_DAY, ' ', et.ET_START, '-', et.ET_END SEPARATOR ', ') as TIME_SLOTS
+    FROM EVENTS e
+    JOIN USER_EVENT ue ON e.E_ID = ue.E_ID
+    JOIN USERS u ON ue.U_ID = u.U_ID
+    LEFT JOIN EVENT_TIME et ON e.E_ID = et.E_ID
+    WHERE e.E_STATUS = ?
+    GROUP BY e.E_ID, u.U_NAME
+    ORDER BY e.E_DATE_START DESC
+  `;
+
+  db.query(sql, [status.toUpperCase()], (err, results) => {
+    if (err) {
+      console.error('Error fetching events by status:', err);
+      return res.status(500).json({ msg: 'Database error', error: err.message });
+    }
+
+    res.json(results);
+  });
+};
+
+// Add this to eventController.js
+// Corrected getConfirmedEvents function
+exports.getConfirmedEvents = (req, res) => {
+  const sql = `
+    SELECT e.*, 
+           e.E_HALL,  /* Using E_HALL directly instead of H_NAME */
+           GROUP_CONCAT(DISTINCT et.ET_DAY, ' ', et.ET_START, '-', et.ET_END SEPARATOR ', ') as TIME_SLOTS
+    FROM EVENTS e
+    JOIN HALLS h ON e.E_HALL = h.H_CODE
+    LEFT JOIN EVENT_TIME et ON e.E_ID = et.E_ID
+    WHERE e.E_STATUS = 'CONFIRMED'
+    GROUP BY e.E_ID
+    ORDER BY e.E_DATE_START ASC
+  `;
+
+  db.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error fetching confirmed events:', err);
+      return res.status(500).json({ msg: 'Database error', error: err.message });
+    }
+
+    res.json(results);
+  });
+};
