@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+
 export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -32,36 +33,42 @@ export default function Login() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded-lg shadow">
-      <h1 className="text-2xl mb-4 text-center">Login</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block mb-1">Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Password</label>
-          <input
-            type="password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Log In
-        </button>
-      </form>
-    </div>
+    
+    <div
+    className="flex flex-col sm:w-240 md:w-240 lg:w-240 max-w-md mx-auto mt-20 p-6 md:p-12 bg-white rounded-2xl shadow-xl"
+  >
+    <h1 className="text-3xl font-bold text-gray-600 mb-6">Login</h1>
+    <form onSubmit={handleSubmit} className="w-full">
+      <div className="flex flex-col mb-4">
+        <label className="block mb-2 text-gray-700">Username</label>
+        <input
+          type="text"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          required
+          className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+          placeholder="Username"
+        />
+      </div>
+      <div className="flex flex-col mb-4">
+        <label className="block mb-2 text-gray-700">Password</label>
+        <input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          required
+          className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+          placeholder="Password"
+        />
+      </div>
+      <button
+        type="submit"
+        className="w-full mt-6 bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600 transition duration-200"
+      >
+        Log In
+      </button>
+    </form>
+  </div>
+  
   )
 }
