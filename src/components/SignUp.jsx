@@ -32,56 +32,62 @@ export default function SignUp() {
   }
 
   return (
-    <div className="max-w-md mx-auto mt-20 p-6 border rounded-lg shadow">
-      <h1 className="text-2xl mb-4 text-center">Sign Up</h1>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div
+  className="flex flex-col w-full sm:w-240 md:w-240 lg:w-240 max-w-md mx-auto mt-20 p-6 md:p-8 bg-white rounded-2xl shadow-xl"
+>
+  <h1 className="text-3xl font-bold mb-4  text-gray-600">Sign Up</h1>
+  <form onSubmit={handleSubmit} className="space-y-4">
+    <div>
+      <label className="block mb-1 text-gray-600">Username</label>
+      <input
+        type="text"
+        value={username}
+        onChange={e => setUsername(e.target.value)}
+        required
+        placeholder="Username"
+        className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+      />
+    </div>
         <div>
-          <label className="block mb-1">Username</label>
-          <input
-            type="text"
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            required
-            className="w-full p-2 border rounded"
-          />
-        </div>
-        <div>
-          <label className="block mb-1">Password</label>
+          <label className="block mb-1 text-gray-600">Password</label>
           <input
             type="password"
             value={password}
             onChange={e => setPassword(e.target.value)}
             required
-            className="w-full p-2 border rounded"
+            placeholder="Password"
+            className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
           />
         </div>
         <div>
-          <label className="block mb-1">Name</label>
+          <label className="block mb-1  text-gray-600">Name</label>
           <input
             type="text"
             value={name}
             onChange={e => setName(e.target.value)}
             required
-            className="w-full p-2 border rounded"
+            placeholder="Name"
+            className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
           />
         </div>
         <div>
-          <label className="block mb-1">Email</label>
+          <label className="block mb-1  text-gray-600">Email</label>
           <input
             type="email"
             value={email}
             onChange={e => setEmail(e.target.value)}
             required
-            className="w-full p-2 border rounded"
+            placeholder="Email"
+            className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
           />
         </div>
         <div>
-          <label className="block mb-1">User Type</label>
+          <label className="block mb-1  text-gray-600">User Type</label>
           <select
             value={type}
             onChange={e => setType(e.target.value)}
             required
-            className="w-full p-2 border rounded"
+            className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
           >
             <option value="student">Student</option>
             <option value="professor">Faculty</option>
@@ -89,12 +95,12 @@ export default function SignUp() {
           </select>
         </div>
         <button
-          type="submit"
-          className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Sign Up
-        </button>
-      </form>
-    </div>
+      type="submit"
+      className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+    >
+      Sign Up
+    </button>
+  </form>
+</div>
   )
 }
