@@ -1,3 +1,6 @@
+
+@import "tailwindcss";
+
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -5,8 +8,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
+  
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -15,18 +17,27 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: rgb(106, 106, 106);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: #bdc0f6;
 }
 
 body {
-  margin: 0;
+  font-size: 1.15em;
+  line-height: 1.6;
+  font-weight: 400;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: inherit;
+  background :url("public/lands2.png");
+  background-size: cover;
+  justify-self: center;
+  margin: 100;  
   display: flex;
   place-items: center;
-  min-width: 320px;
+  justify-content: center;
+  min-width: 100vw;
   min-height: 100vh;
 }
 
