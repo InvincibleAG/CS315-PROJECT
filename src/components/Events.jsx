@@ -84,7 +84,7 @@ export default function Events() {
         <h1 className="text-2xl font-bold">{isAdmin ? 'All Events' : 'My Events'}</h1>
         <div className="flex gap-4">
           {isAdmin && (
-            <div className="flex items-center">
+            <div className="flex items-center text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-sm text-sm px-5 py-2.5 text-center me-1 mb-0">
               <label htmlFor="statusFilter" className="mr-2">Filter:</label>
               <select
                 id="statusFilter"
@@ -169,7 +169,7 @@ export default function Events() {
                   </td>
                   {isAdmin && (
                     <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                      {event.U_NAME} ({event.U_TYPE})
+                      {event.REQUESTER_NAME} 
                     </td>
                   )}
                   <td className="px-6 py-4 whitespace-nowrap text-gray-600">
@@ -178,9 +178,14 @@ export default function Events() {
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-gray-600">
-                    <button className="text-white hover:text-blue-100 mr-1">
-                      View
-                    </button>
+                 
+  <Link
+    to={`/events/${event.E_ID}`}
+    className="hover:underline mt-2 inline-block mr-5"
+  >
+    View
+  </Link>
+
                     
                     {isAdmin && event.E_STATUS === 'PENDING' && (
                       <>
