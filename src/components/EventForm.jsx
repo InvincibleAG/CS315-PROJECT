@@ -128,7 +128,7 @@ export default function EventForm() {
       )}
       
       <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-lg p-6">
-        <div >
+        <div className="mb-4">
           <label className="block text-gray-700 font-medium mb-2">
             Event Type
           </label>
@@ -139,7 +139,7 @@ export default function EventForm() {
             onChange={handleChange}
             required
             placeholder="e.g., Lecture, Workshop, Seminar"
-            className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+            className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
           />
         </div>
         
@@ -153,7 +153,7 @@ export default function EventForm() {
             onChange={handleChange}
             required
             placeholder="Select a hall"
-            className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+            className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
           >
             <option value="">Select a hall</option>
             {halls.map(hall => (
@@ -175,8 +175,9 @@ export default function EventForm() {
               value={formData.dateStart}
               onChange={handleChange}
               required
-              className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+              className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
               min={new Date().toISOString().split('T')[0]}
+              style={{ colorScheme: 'light' }}
             />
           </div>
           <div>
@@ -189,8 +190,9 @@ export default function EventForm() {
               value={formData.dateEnd}
               onChange={handleChange}
               required
-              className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+              className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
               min={formData.dateStart || new Date().toISOString().split('T')[0]}
+              style={{ colorScheme: 'light' }}
             />
           </div>
         </div>
@@ -203,14 +205,14 @@ export default function EventForm() {
             <button
               type="button"
               onClick={addTimeSlot}
-              className="px-4 py-2 bg-white text-white rounded hover:bg-blue-700 disabled:bg-blue-300 "
+              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
             >
               + Add Time Slot
             </button>
           </div>
           
           {formData.eventTimes.map((timeSlot, index) => (
-            <div key={index} className="bg-gray-50 p-3 rounded mb-3">
+            <div key={index} className="bg-gray-50 p-3 rounded mb-3 border border-gray-200">
               <div className="grid grid-cols-3 gap-2 mb-2">
                 <div>
                   <label className="block text-gray-700 text-sm mb-1">
@@ -221,9 +223,10 @@ export default function EventForm() {
                     value={timeSlot.day}
                     onChange={(e) => handleTimeChange(index, 'day', e.target.value)}
                     required
-                    className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+                    className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
                     min={formData.dateStart}
                     max={formData.dateEnd}
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
                 <div>
@@ -235,7 +238,8 @@ export default function EventForm() {
                     value={timeSlot.start}
                     onChange={(e) => handleTimeChange(index, 'start', e.target.value)}
                     required
-                    className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+                    className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
                 <div>
@@ -247,7 +251,8 @@ export default function EventForm() {
                     value={timeSlot.end}
                     onChange={(e) => handleTimeChange(index, 'end', e.target.value)}
                     required
-                    className="w-full p-3 bg-gray-50 text-gray-600 border border-gray-300 rounded-lg focus:ring-1 focus:ring-gray-400 focus:outline-none focus:border-gray-400"
+                    className="w-full p-3 bg-gray-50 text-gray-800 border border-gray-300 rounded-lg focus:ring-1 focus:ring-blue-400 focus:outline-none focus:border-blue-400"
+                    style={{ colorScheme: 'light' }}
                   />
                 </div>
               </div>
@@ -256,7 +261,7 @@ export default function EventForm() {
                 <button
                   type="button"
                   onClick={() => removeTimeSlot(index)}
-                  className="text-red-600 hover:text-red-800 text-xs"
+                  className="text-red-600 hover:text-red-800 text-xs font-medium"
                 >
                   Remove
                 </button>
@@ -269,14 +274,14 @@ export default function EventForm() {
           <button
             type="button"
             onClick={() => navigate('/events')}
-            className="px-4 py-2 bg-white text-white rounded hover:bg-blue-700 disabled:bg-blue-300 "
+            className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 disabled:bg-gray-300"
           >
             Cancel
           </button>
           <button
             type="submit"
             disabled={submitting}
-            className="px-4 py-2 bg-white text-white rounded hover:bg-blue-700 disabled:bg-blue-300 "
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-blue-300"
           >
             {submitting ? 'Submitting...' : 'Lodge Event'}
           </button>
