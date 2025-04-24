@@ -30,7 +30,7 @@ body {
   font-weight: 400;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   color: inherit;
-  background :url("public/lands2.png");
+  background :url("lands2.png");
   background-size: cover;
   justify-self: center;
   margin: 100;  
