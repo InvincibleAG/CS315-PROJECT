@@ -26,9 +26,9 @@ export default function Calendar() {
       }
       
       const data = await response.json();
-      // Process the events to parse time slots
+
       const processedEvents = data.map(event => {
-        // Parse TIME_SLOTS to extract actual time information
+
         const timeSlots = parseTimeSlots(event.TIME_SLOTS);
         return {
           ...event,
@@ -45,19 +45,19 @@ export default function Calendar() {
     }
   };
 
-  // Parse the TIME_SLOTS string into usable datetime objects
+
   const parseTimeSlots = (timeSlotsStr) => {
     if (!timeSlotsStr) return [];
     
-    // Split multiple time slots (separated by commas)
+
     const slots = timeSlotsStr.split(',').map(slot => slot.trim());
     
     return slots.map(slot => {
-      // Extract date and time range
+
       const [dateStr, timeRange] = slot.split(' ');
       const [startTime, endTime] = timeRange.split('-');
       
-      // Create start and end datetime objects
+
       const startDateTime = new Date(`${dateStr}T${startTime}`);
       const endDateTime = new Date(`${dateStr}T${endTime}`);
       
@@ -71,17 +71,17 @@ export default function Calendar() {
     });
   };
 
-  // Helper to get days in a month
+
   const getDaysInMonth = (year, month) => {
     return new Date(year, month + 1, 0).getDate();
   };
   
-  // Get the first day of the month (0 = Sunday, 1 = Monday, etc)
+
   const getFirstDayOfMonth = (year, month) => {
     return new Date(year, month, 1).getDay();
   };
   
-  // Helper to format date as YYYY-MM-DD
+
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -89,7 +89,7 @@ export default function Calendar() {
     return `${year}-${month}-${day}`;
   };
   
-  // Check if a date has events and get time slots for that date
+
   const getEventsForDate = (date) => {
     const dateStr = formatDate(date);
     
@@ -97,14 +97,14 @@ export default function Calendar() {
       const startDate = new Date(event.E_DATE_START);
       const endDate = new Date(event.E_DATE_END);
       
-      // Convert all to date strings for comparison
+
       const startDateStr = formatDate(startDate);
       const endDateStr = formatDate(endDate);
       
-      // Check if the date falls within the event's date range
+
       return dateStr >= startDateStr && dateStr <= endDateStr;
     }).map(event => {
-      // Filter time slots for this specific date
+
       const dateSpecificTimeSlots = event.parsedTimeSlots.filter(slot => 
         slot.date === dateStr
       );
@@ -116,7 +116,7 @@ export default function Calendar() {
     });
   };
   
-  // Navigate to prev/next month
+
   const navigateMonth = (direction) => {
     setCurrentDate(prevDate => {
       const newDate = new Date(prevDate);
@@ -125,7 +125,7 @@ export default function Calendar() {
     });
   };
 
-  // Navigate to prev/next week
+  //prev/next week
   const navigateWeek = (direction) => {
     setCurrentDate(prevDate => {
       const newDate = new Date(prevDate);
@@ -134,15 +134,15 @@ export default function Calendar() {
     });
   };
   
-  // Get the current week's start and end dates
+  //current week's start and end dates
   const getWeekDates = () => {
     const date = new Date(currentDate);
-    const day = date.getDay(); // 0 = Sunday, 1 = Monday, etc.
+    const day = date.getDay(); // 0 = Sunday, 1 = Monday
     
-    // Set to the first day of the week (Sunday)
+    //(Sunday)
     date.setDate(date.getDate() - day);
     
-    // Create an array of the week's dates
+
     const weekDates = [];
     for (let i = 0; i < 7; i++) {
       const weekDate = new Date(date);
@@ -153,23 +153,23 @@ export default function Calendar() {
     return weekDates;
   };
   
-  // Render the month view grid 
+
   const renderMonthView = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
     const daysInMonth = getDaysInMonth(year, month);
     const firstDay = getFirstDayOfMonth(year, month);
     
-    // Create array of days for display
+
     const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
     
-    // Add empty cells for days before the first day of the month
+
     const emptyDays = Array.from({ length: firstDay }, (_, i) => null);
     
-    // Combine empty days and actual days
+
     const allDays = [...emptyDays, ...days];
     
-    // Create weeks (rows of 7 days)
+    // 7 days)
     const weeks = [];
     for (let i = 0; i < allDays.length; i += 7) {
       weeks.push(allDays.slice(i, i + 7));
@@ -247,7 +247,7 @@ export default function Calendar() {
     );
   };
 
-  // Render the week view
+
   const renderWeekView = () => {
     const weekDates = getWeekDates();
     const today = formatDate(new Date());
@@ -330,7 +330,7 @@ export default function Calendar() {
     );
   };
   
-  // Render the day view
+
   const renderDayView = () => {
     const dateStr = formatDate(currentDate);
     const dateEvents = getEventsForDate(currentDate);
