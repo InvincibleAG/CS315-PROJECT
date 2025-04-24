@@ -1,4 +1,4 @@
--- This SQL script creates the database schema for the LHC (Lecture Hall Booking System)
+
 CREATE TABLE LOGIN (
     L_ID INT PRIMARY KEY AUTO_INCREMENT,
     L_PASSWORD VARCHAR(255) NOT NULL,
