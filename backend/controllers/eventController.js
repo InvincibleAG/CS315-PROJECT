@@ -163,7 +163,6 @@ exports.getAllEvents = (req, res) => {
   });
 };
 
-// Get a specific event by ID
 exports.getEventById = (req, res) => {
   const eventId = req.params.id;
   const userId = req.user.id;
@@ -174,7 +173,7 @@ exports.getEventById = (req, res) => {
     WHERE E_ID = ? AND U_ID = ?
     UNION
     SELECT 1 FROM USERS
-    WHERE U_ID = ? AND U_TYPE IN ('ADMIN', 'STAFF')
+    WHERE U_ID = ? AND U_TYPE IN ('ADMIN', 'STAFF', 'STUDENT')
   `;
 
   db.query(accessSql, [eventId, userId, userId], (accessErr, accessResults) => {
@@ -244,7 +243,7 @@ exports.updateEventStatus = (req, res) => {
     }
     
     // Check if user is admin - placeholder function
-    const isAdmin = req.user.isAdmin; // This should be set based on your auth system
+    const isAdmin = req.user.isAdmin ; // This should be set based on your auth system
     
     if (!isAdmin) {
       console.log('Access denied: User is not an admin');
