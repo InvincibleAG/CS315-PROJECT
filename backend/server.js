@@ -4,13 +4,11 @@ const path = require('path');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000; // Changed from 5000 to avoid AirPlay conflict
+const port = process.env.PORT || 3000; 
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Import routes using path.join for cross-platform compatibility
 const authRoutes = require(path.join(__dirname, 'routes', 'authRoutes'));
 const eventRoutes = require(path.join(__dirname, 'routes', 'eventRoutes'));
 const hallRoutes = require(path.join(__dirname, 'routes', 'hallRoutes'));
@@ -23,7 +21,6 @@ app.get('/', (req, res) => {
   res.send('Lecture Hall Booking System Backend is Running!');
 });
 
-// Handle errors when port is in use
 app.listen(port, () => {
   console.log(`🚀 Server running on http://localhost:${port}`);
 }).on('error', (err) => {
