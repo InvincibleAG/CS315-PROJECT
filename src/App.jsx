@@ -4,6 +4,7 @@ import Login from './components/Login.jsx'
 import SignUp from './components/SignUp.jsx'
 import Events from './components/Events.jsx'
 import EventForm from './components/EventForm.jsx'
+import EventDetails from './components/EventDetails.jsx'  // Import the new component
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import AdminRoute from './components/AdminRoute.jsx'
 import AdminEvents from './components/AdminEvents.jsx'
@@ -28,6 +29,12 @@ export default function App() {
           <Route path="/events/new" element={
             <ProtectedRoute>
               <EventForm />
+            </ProtectedRoute>
+          } />
+          {/* Add the new route for event details */}
+          <Route path="/events/:id" element={
+            <ProtectedRoute>
+              <EventDetails />
             </ProtectedRoute>
           } />
           <Route path="/calendar" element={
