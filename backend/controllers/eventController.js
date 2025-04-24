@@ -1,16 +1,13 @@
 const db = require('../db/db_connection');
 
-// Create a new event
 exports.createEvent = (req, res) => {
   const { eventType, hallCode, dateStart, dateEnd, eventTimes } = req.body;
-  const userId = req.user.id; // From JWT token
+  const userId = req.user.id; 
 
-  // Validate request body
   if (!eventType || !hallCode || !dateStart || !dateEnd || !eventTimes || eventTimes.length === 0) {
     return res.status(400).json({ msg: 'Missing required fields' });
   }
 
-  // Validate dates
   const startDate = new Date(dateStart);
   const endDate = new Date(dateEnd);
   const currentDate = new Date();
@@ -23,14 +20,12 @@ exports.createEvent = (req, res) => {
     return res.status(400).json({ msg: 'End date must be after start date' });
   }
 
-  // Start transaction
   db.beginTransaction(err => {
     if (err) {
       console.error('Transaction start error:', err);
       return res.status(500).json({ msg: 'Transaction error', error: err.message });
     }
 
-    // 1. Insert into EVENTS table
     const eventSql = `
       INSERT INTO EVENTS (E_TYPE, E_HALL, E_STATUS, E_DATE_START, E_DATE_END)
       VALUES (?, ?, 'PENDING', ?, ?)
@@ -46,7 +41,6 @@ exports.createEvent = (req, res) => {
 
       const eventId = eventResult.insertId;
 
-      // 2. Link user to event
       const linkUserSql = 'INSERT INTO USER_EVENT (U_ID, E_ID) VALUES (?, ?)';
       
       db.query(linkUserSql, [userId, eventId], (linkErr) => {
@@ -57,7 +51,6 @@ exports.createEvent = (req, res) => {
           });
         }
 
-        // 3. Insert event times
         const insertTimes = eventTimes.map(time => {
           return new Promise((resolve, reject) => {
             const timeSql = `
@@ -78,7 +71,6 @@ exports.createEvent = (req, res) => {
 
         Promise.all(insertTimes)
           .then(() => {
-            // Commit the transaction
             db.commit(commitErr => {
               if (commitErr) {
                 console.error('Commit error:', commitErr);
@@ -104,9 +96,8 @@ exports.createEvent = (req, res) => {
   });
 };
 
-// Get all events for the current user
 exports.getUserEvents = (req, res) => {
-  const userId = req.user.id; // From JWT token
+  const userId = req.user.id; 
 
   const sql = `
     SELECT e.*, 
@@ -129,12 +120,9 @@ exports.getUserEvents = (req, res) => {
   });
 };
 
-// Get all events (admin only)
 exports.getAllEvents = (req, res) => {
-  // Check if user is admin
-  // This is a placeholder - you'd need to implement admin check
-  // based on your user roles system
-  const isAdmin = req.user.isAdmin; // This should be set based on your auth system
+
+  const isAdmin = req.user.isAdmin; 
   
   if (!isAdmin) {
     console.log('Access denied: User is not an admin');
@@ -167,7 +155,6 @@ exports.getEventById = (req, res) => {
   const eventId = req.params.id;
   const userId = req.user.id;
 
-  // First check if user has access to this event
   const accessSql = `
     SELECT 1 FROM USER_EVENT 
     WHERE E_ID = ? AND U_ID = ?
@@ -187,7 +174,6 @@ exports.getEventById = (req, res) => {
       return res.status(403).json({ msg: 'Access denied to this event' });
     }
 
-    // User has access, fetch event details
     const eventSql = `
       SELECT e.*, 
              u.U_NAME as REQUESTER_NAME,
@@ -211,7 +197,6 @@ exports.getEventById = (req, res) => {
 
       const event = eventResults[0];
 
-      // Get event times
       const timesSql = `
         SELECT ET_DAY, ET_DAY_OF_WEEK, ET_START, ET_END
         FROM EVENT_TIME
@@ -232,18 +217,15 @@ exports.getEventById = (req, res) => {
   });
 };
 
-// Update event status (admin only)
 exports.updateEventStatus = (req, res) => {
     const eventId = req.params.id;
     const { status } = req.body;
     
-    // Validate request body
     if (!status || !['CONFIRMED', 'PENDING', 'CANCELLED'].includes(status)) {
       return res.status(400).json({ msg: 'Invalid status value' });
     }
     
-    // Check if user is admin - placeholder function
-    const isAdmin = req.user.isAdmin ; // This should be set based on your auth system
+    const isAdmin = req.user.isAdmin ; 
     
     if (!isAdmin) {
       console.log('Access denied: User is not an admin');
@@ -271,10 +253,9 @@ exports.updateEventStatus = (req, res) => {
   };
   
 
-  // Add this to eventController.js
 exports.getEventsByStatus = (req, res) => {
   const { status } = req.params;
-  // Check if user is admin
+
   const isAdmin = req.user.isAdmin;
   
   if (!isAdmin) {
@@ -282,7 +263,6 @@ exports.getEventsByStatus = (req, res) => {
     return res.status(403).json({ msg: 'Access denied: Admin only' });
   }
   
-  // Validate status
   const validStatus = ['PENDING', 'CONFIRMED', 'CANCELLED'].includes(status.toUpperCase());
   if (!validStatus) {
     return res.status(400).json({ msg: 'Invalid status value' });
@@ -311,8 +291,6 @@ exports.getEventsByStatus = (req, res) => {
   });
 };
 
-// Add this to eventController.js
-// Corrected getConfirmedEvents function
 exports.getConfirmedEvents = (req, res) => {
   const sql = `
     SELECT e.*, 
