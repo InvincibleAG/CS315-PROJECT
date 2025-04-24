@@ -1,6 +1,5 @@
 const db = require('../db/db_connection');
 
-// Get all halls
 exports.getAllHalls = (req, res) => {
   const sql = 'SELECT * FROM HALLS ORDER BY H_CODE';
   
@@ -14,7 +13,6 @@ exports.getAllHalls = (req, res) => {
   });
 };
 
-// Get hall availability for a date range
 exports.getHallAvailability = (req, res) => {
   const { hallCode, dateStart, dateEnd } = req.query;
   
@@ -22,7 +20,6 @@ exports.getHallAvailability = (req, res) => {
     return res.status(400).json({ msg: 'hallCode, dateStart, and dateEnd are required' });
   }
   
-  // Get all time slots for this hall during the specified date range
   const sql = `
     SELECT 
       e.E_ID, e.E_TYPE, e.E_STATUS, e.E_DATE_START, e.E_DATE_END,
@@ -41,9 +38,9 @@ exports.getHallAvailability = (req, res) => {
   
   db.query(sql, [
     hallCode, 
-    dateEnd, dateStart,  // Condition 1
-    dateStart, dateStart, // Condition 2
-    dateStart, dateEnd   // Condition 3
+    dateEnd, dateStart, 
+    dateStart, dateStart, 
+    dateStart, dateEnd  
   ], (err, results) => {
     if (err) {
       console.error('Error checking hall availability:', err);
