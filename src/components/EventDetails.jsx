@@ -24,16 +24,16 @@ export default function EventDetails() {
             }
           });
           
-          console.log('Response :', response); // Log the response object for debugging
-          // Check if response is OK before parsing as JSON
+          console.log('Response :', response); 
+
           if (!response.ok) {
-            // Try to get error details, but handle non-JSON responses
+
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
               const errorData = await response.json();
               throw new Error(errorData.msg || `Error: ${response.status}`);
             } else {
-              // For non-JSON responses (like HTML error pages)
+
               const errorText = await response.text();
               console.error('Non-JSON error response:', errorText.substring(0, 100) + '...');
               throw new Error(`Server returned ${response.status}: Not a valid JSON response`);
