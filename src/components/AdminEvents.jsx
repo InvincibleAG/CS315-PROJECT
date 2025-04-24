@@ -83,22 +83,22 @@ export default function AdminEvents() {
   if (error) return <div className="text-center py-8 text-red-600">{error}</div>;
   
   return (
-    <div className="max-w-6xl mx-auto">
+    <div className="max-w-6xl mx-auto ">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Event Management - Admin Panel</h1>
-        
-        <div className="flex items-center">
-          <label htmlFor="statusFilter" className="mr-2">Status Filter:</label>
+      
+        <div className="flex items-center text-gray-900 bg-gradient-to-r from-teal-200 to-lime-200 hover:bg-gradient-to-l hover:from-teal-200 hover:to-lime-200 focus:ring-4 focus:outline-none focus:ring-lime-200 dark:focus:ring-teal-700 font-medium rounded-sm text-sm px-5 py-2.5 text-center me-1 mb-0">
+          <label htmlFor="statusFilter" className="mr-2 text-2xl text-bold text-gray-900">Status Filter:</label>
           <select
             id="statusFilter"
             value={filter}
             onChange={(e) => setFilter(e.target.value)}
-            className="border p-2 rounded"
+            className="border p-1 rounded text-gray-900 background-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="all">All Events</option>
-            <option value="pending">Pending</option>
-            <option value="confirmed">Confirmed</option>
-            <option value="cancelled">Cancelled</option>
+            <option value="all" className="text-gray-500">All Events</option>
+            <option value="pending" className="text-gray-500">Pending</option>
+            <option value="confirmed" className="text-gray-500">Confirmed</option>
+            <option value="cancelled" className="text-gray-500">Cancelled</option>
           </select>
         </div>
       </div>
@@ -135,30 +135,30 @@ export default function AdminEvents() {
             <tbody className="bg-white divide-y divide-gray-200">
               {events.map((event) => (
                 <tr key={event.E_ID}>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {event.E_TYPE}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {event.E_HALL}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     {new Date(event.E_DATE_START).toLocaleDateString()} - {new Date(event.E_DATE_END).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {event.U_NAME} ({event.U_TYPE})
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
+                    {event.REQUESTER_NAME}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-500">
                     <span className={`px-2 py-1 rounded-full text-xs ${getStatusBadgeClass(event.E_STATUS)}`}>
                       {event.E_STATUS}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <button 
-                      className="text-blue-600 hover:text-blue-900 mr-2"
-                      onClick={() => {/* View event details - could expand this */}}
-                    >
-                      View
-                    </button>
+                  <Link
+                    to={`/events/${event.E_ID}`}
+                    className="hover:underline mt-2 inline-block mr-5 "
+                  >
+                    View
+                  </Link>
                     
                     {event.E_STATUS === 'PENDING' && (
                       <>
