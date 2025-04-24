@@ -26,13 +26,49 @@ export default function Calendar() {
       }
       
       const data = await response.json();
-      setEvents(data);
+      // Process the events to parse time slots
+      const processedEvents = data.map(event => {
+        // Parse TIME_SLOTS to extract actual time information
+        const timeSlots = parseTimeSlots(event.TIME_SLOTS);
+        return {
+          ...event,
+          parsedTimeSlots: timeSlots
+        };
+      });
+      
+      setEvents(processedEvents);
     } catch (err) {
       console.error('Error fetching confirmed events:', err);
       setError('Failed to load events. Please try again later.');
     } finally {
       setLoading(false);
     }
+  };
+
+  // Parse the TIME_SLOTS string into usable datetime objects
+  const parseTimeSlots = (timeSlotsStr) => {
+    if (!timeSlotsStr) return [];
+    
+    // Split multiple time slots (separated by commas)
+    const slots = timeSlotsStr.split(',').map(slot => slot.trim());
+    
+    return slots.map(slot => {
+      // Extract date and time range
+      const [dateStr, timeRange] = slot.split(' ');
+      const [startTime, endTime] = timeRange.split('-');
+      
+      // Create start and end datetime objects
+      const startDateTime = new Date(`${dateStr}T${startTime}`);
+      const endDateTime = new Date(`${dateStr}T${endTime}`);
+      
+      return {
+        date: dateStr,
+        startTime: startDateTime,
+        endTime: endDateTime,
+        formattedStartTime: startDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}),
+        formattedEndTime: endDateTime.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+      };
+    });
   };
 
   // Helper to get days in a month
@@ -53,9 +89,10 @@ export default function Calendar() {
     return `${year}-${month}-${day}`;
   };
   
-  // Check if a date has events
+  // Check if a date has events and get time slots for that date
   const getEventsForDate = (date) => {
     const dateStr = formatDate(date);
+    
     return events.filter(event => {
       const startDate = new Date(event.E_DATE_START);
       const endDate = new Date(event.E_DATE_END);
@@ -66,6 +103,16 @@ export default function Calendar() {
       
       // Check if the date falls within the event's date range
       return dateStr >= startDateStr && dateStr <= endDateStr;
+    }).map(event => {
+      // Filter time slots for this specific date
+      const dateSpecificTimeSlots = event.parsedTimeSlots.filter(slot => 
+        slot.date === dateStr
+      );
+      
+      return {
+        ...event,
+        dateTimeSlots: dateSpecificTimeSlots.length > 0 ? dateSpecificTimeSlots : event.parsedTimeSlots
+      };
     });
   };
   
@@ -106,7 +153,7 @@ export default function Calendar() {
     return weekDates;
   };
   
-  // Render the month view grid (unchanged from original)
+  // Render the month view grid 
   const renderMonthView = () => {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -172,7 +219,7 @@ export default function Calendar() {
                   key={`day-${day}`} 
                   className={`min-h-24 p-1 border border-gray-200 ${isToday ? 'bg-blue-50' : ''}`}
                 >
-                  <div className={`text-right  mb-1 ${isToday ? 'font-bold text-blue-600' : 'text-green-900'}`}>
+                  <div className={`text-right mb-1 ${isToday ? 'font-bold text-blue-600' : 'text-green-900'}`}>
                     {day}
                   </div>
                   
@@ -259,12 +306,15 @@ export default function Calendar() {
                         className="p-2 mb-2 rounded bg-blue-100 text-blue-800"
                       >
                         <Link to={`/events/${event.E_ID}`}>
-                          <div className="font-medium ">{event.E_TYPE}</div>
+                          <div className="font-medium">{event.E_TYPE}</div>
                           <div className="text-sm">Hall: {event.E_HALL}</div>
-                          <div className="text-xs text-gray-600">
-                            {new Date(event.E_DATE_START).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
-                            {new Date(event.E_DATE_END).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                          </div>
+                          {event.dateTimeSlots && event.dateTimeSlots.length > 0 ? (
+                            <div className="text-xs text-gray-600">
+                              {event.dateTimeSlots[0].formattedStartTime} - {event.dateTimeSlots[0].formattedEndTime}
+                            </div>
+                          ) : (
+                            <div className="text-xs text-gray-600">Time not specified</div>
+                          )}
                         </Link>
                       </div>
                     ))
@@ -299,7 +349,7 @@ export default function Calendar() {
           >
             &lt; Prev Day
           </button>
-          <h2 className={`text-lg font-semibold ${isToday ? 'text-blue-600' : ''}`}>
+          <h2 className={`text-lg font-semibold ${isToday ? 'text-blue-600' : 'text-green-900'}`}>
             {currentDate.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </h2>
           <button 
@@ -329,14 +379,17 @@ export default function Calendar() {
                     <div className="grid grid-cols-2 gap-4 mt-2">
                       <div>
                         <p className="text-sm text-gray-600">Location:</p>
-                        <p >{event.E_HALL}</p>
+                        <p>{event.E_HALL}</p>
                       </div>
                       <div>
                         <p className="text-sm text-gray-600">Time:</p>
-                        <p>
-                          {new Date(event.E_DATE_START).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})} - 
-                          {new Date(event.E_DATE_END).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                        </p>
+                        {event.dateTimeSlots && event.dateTimeSlots.length > 0 ? (
+                          <p>
+                            {event.dateTimeSlots[0].formattedStartTime} - {event.dateTimeSlots[0].formattedEndTime}
+                          </p>
+                        ) : (
+                          <p>Time not specified</p>
+                        )}
                       </div>
                     </div>
                   </Link>
