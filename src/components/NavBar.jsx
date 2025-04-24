@@ -71,6 +71,12 @@ export default function NavBar() {
                 >
                   Manage Events
                 </Link>
+                <Link 
+                    to="/calendar" 
+                    className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
+                  >
+                    Calendar
+                </Link>
               </li>
             ) : (
               <>
