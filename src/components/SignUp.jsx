@@ -5,7 +5,7 @@ export default function SignUp() {
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [type, setType] = useState('student') // Default type
+  const [type, setType] = useState('student')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -21,7 +21,7 @@ export default function SignUp() {
       if (res.ok) {
         localStorage.setItem('token', data.token)
         alert('Sign up successful!')
-        // optionally redirect or reload
+        //redirect or reload
       } else {
         alert(data.msg || 'Sign up failed')
       }
